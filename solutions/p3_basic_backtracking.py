@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from p1_is_complete import *
+from p2_is_consistent import *
 
 
 def select_unassigned_variable(csp):
@@ -48,7 +50,17 @@ def backtrack(csp):
     """
 
     # TODO implement this
-    pass
+    if (is_complete(csp)):
+        return True
+    else:
+        # Set rollback point
+        csp.variables.begin_transaction()
 
+        # Get first unassigned variable
+        var = filter(lambda v : not v.is_assigned(), csp.variables)[0]
+        print var
 
+        # Iterate through domain
+        # for value in var.
 
+        return False

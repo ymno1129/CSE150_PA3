@@ -16,4 +16,3 @@ def is_complete(csp):
         if not v.is_assigned():
             result = False
     return result
-    pass

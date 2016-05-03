@@ -17,4 +17,3 @@ def is_consistent(csp, variable, value):
         if not x.is_satisfied(x.var1.value, x.var2.value):
             result = False
     return result
-    pass
