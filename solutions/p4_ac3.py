@@ -19,7 +19,7 @@ def ac3(csp, arcs=None):
         arc = queue_arcs.pop()
         var1 = arc[0]
         var2 = arc[1]
-#        print str(var1) + str(var2)
+
         if var1.is_assigned() and var2.is_assigned():
             if var1.value == var2.value:
                 return False
