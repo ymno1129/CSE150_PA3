@@ -35,9 +35,6 @@ def ac3(csp, arcs=None):
             for val in dom:
                 if val == var2.value:
                     return False
-
-        if set(var1.domain).intersection(var2.domain) == len(var1.domain):
-            return False
     return True
 
     # TODO implement this
