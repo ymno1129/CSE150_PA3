@@ -57,10 +57,19 @@ def backtrack(csp):
         csp.variables.begin_transaction()
 
         # Get first unassigned variable
-        var = filter(lambda v : not v.is_assigned(), csp.variables)[0]
-        print var
+        var = select_unassigned_variable(csp)
 
         # Iterate through domain
-        # for value in var.
+        for value in order_domain_values(csp, var):
+            # Explore this assignment
+            if is_consistent(csp, var, value):
+                var.assign(value)
+                if (inference(csp, var)):
+                    if (backtrack(csp)):
+                        print [v for v in csp.variables]
+                        return True
+
+            # Nope
+            csp.variables.rollback()
 
         return False
