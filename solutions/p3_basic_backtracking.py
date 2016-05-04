@@ -48,28 +48,26 @@ def backtrack(csp):
 
     If there is a solution, this method returns True; otherwise, it returns False.
     """
-
+    
     # TODO implement this
     if (is_complete(csp)):
         return True
     else:
-        # Set rollback point
+        result = None
+       # Set rollback point
         csp.variables.begin_transaction()
 
         # Get first unassigned variable
         var = select_unassigned_variable(csp)
+#        print str(var)
 
         # Iterate through domain
         for value in order_domain_values(csp, var):
+            var.assign(value)
             # Explore this assignment
             if is_consistent(csp, var, value):
-                var.assign(value)
-                if (inference(csp, var)):
-                    if (backtrack(csp)):
-                        print [v for v in csp.variables]
-                        return True
-
-            # Nope
-            csp.variables.rollback()
-
+                result = backtrack(csp)
+                if result == True:
+                    return True
+        csp.variables.rollback()
         return False
