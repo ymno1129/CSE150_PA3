@@ -52,8 +52,7 @@ def test_generator(test_module, python_file, infile, outfile):
 # for problem_dir in glob('../problems/p*'):
 for problem_dir in glob('../problems/p4'):
     problem = op.basename(problem_dir)
-    # for infile in glob(op.join(problem_dir, 'in', 'input*.txt')):
-    for infile in glob(op.join(problem_dir, 'in', 'input2.txt')):
+    for infile in glob(op.join(problem_dir, 'in', 'input*.txt')):
         input_name = op.splitext(op.basename(infile))[0]
         outfile = op.join(problem_dir, 'out', 'output' + input_name.split('input')[-1] + '.txt')
         name = '%s_%s' % (problem, input_name)

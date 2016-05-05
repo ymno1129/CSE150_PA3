@@ -33,9 +33,6 @@ def select_unassigned_variable(csp):
             if tmp_constraints > selected_constraints:
                 selected_var = var
     return selected_var if selected_var else None
-    # TODO implement this
-    pass
-
 
 
 def order_domain_values(csp, variable):
@@ -77,6 +74,3 @@ def order_domain_values(csp, variable):
     for x in range (0, len(variable.domain)):
         variable.domain[x] = preorder_list[x][0]
     return variable.domain
-
-    # TODO implement this
-    pass

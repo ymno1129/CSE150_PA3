@@ -14,13 +14,9 @@ def ac3(csp, arcs=None):
 
     This method returns True if the arc consistency check succeeds, and False otherwise."""
 
-    #I'm not sure if this is correct
-
     queue_arcs = deque(arcs if arcs is not None else csp.constraints.arcs())
     while queue_arcs:
         var1, var2 = queue_arcs.popleft()
-        # for variable in csp.variables:
-        #     print variable, variable.domain
 
         # Propagate changes in var1.domain to neighbors
         if revise(csp, var1, var2):
@@ -36,11 +32,15 @@ def revise(csp, xi, xj):
     revised = False
 
     # Check for consistency
-    for di in xi.domain:
-        for dj in xj.domain:
-            # Remove conflicting values from domain
-            for constraint in csp.constraints[xi, xj]:
-                if not constraint.is_satisfied(di, dj) and di in xi.domain:
-                    xi.domain.remove(di)
-                    revised = True
+    for constraint in csp.constraints[xi, xj]:
+
+        # Check if value has non-conflicting assignments
+        non_conflicts = []
+        for di in xi.domain:
+            non_conflicts = [dj for dj in xj.domain if constraint.is_satisfied(di, dj)]
+
+            # This value conflicts w/ everything
+            if len(non_conflicts) == 0 and di in xi.domain:
+                xi.domain.remove(di)
+                revised = True
     return revised
