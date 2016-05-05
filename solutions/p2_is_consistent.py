@@ -12,9 +12,8 @@ def is_consistent(csp, variable, value):
 
     # TODO implement this
     variable.assign(value)
-    relevant = [c for c in csp.constraints if c.var1 == variable or c.var2 == variable]
-    for x in relevant:
-        if x.var1.is_assigned() and x.var2.is_assigned():
-            if not x.is_satisfied(x.var1.value, x.var2.value):
-                return False
+    for x in csp.constraints[variable]:
+        if x.var1.is_assigned() and x.var2.is_assigned() and \
+            not x.is_satisfied(x.var1.value, x.var2.value):
+            return False
     return True

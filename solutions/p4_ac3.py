@@ -16,30 +16,29 @@ def ac3(csp, arcs=None):
 
     queue_arcs = deque(arcs if arcs is not None else csp.constraints.arcs())
     while queue_arcs:
-        arc = queue_arcs.pop()
-        var1 = arc[0]
-        var2 = arc[1]
+        var1, var2 = queue_arcs.popleft()
+        # for variable in csp.variables:
+        #     print variable, variable.domain
 
-        if var1.is_assigned() and var2.is_assigned():
-            if var1.value == var2.value:
+        # Propagate changes in var1.domain to neighbors
+        if revise(csp, var1, var2):
+            if len(var1.domain) == 0:
                 return False
-
-        if var1.is_assigned():
-            dom = var2.domain
-            for val in dom:
-                if val == var1.value:
-                    return False
-
-        if var2.is_assigned():
-            dom = var1.domain
-            for val in dom:
-                if val == var2.value:
-                    return False
+            for (v, neighbor) in csp.constraints[var1].arcs():
+                if (neighbor != var2):
+                    queue_arcs.append((v, neighbor))
     return True
 
-    # TODO implement this
-    pass
-
 def revise(csp, xi, xj):
-    # You may additionally want to implement the 'revise' method.
-    pass
+
+    revised = False
+
+    # Check for consistency
+    for di in xi.domain:
+        for dj in xj.domain:
+            # Remove conflicting values from domain
+            for constraint in csp.constraints[xi, xj]:
+                if not constraint.is_satisfied(di, dj) and di in xi.domain:
+                    xi.domain.remove(di)
+                    revised = True
+    return revised

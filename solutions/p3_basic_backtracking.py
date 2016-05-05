@@ -49,7 +49,7 @@ def backtrack(csp):
     If there is a solution, this method returns True; otherwise, it returns False.
     """
     
-    # TODO implement this
+    # Base case
     if (is_complete(csp)):
         return True
     else:
@@ -64,7 +64,9 @@ def backtrack(csp):
             var.assign(value)
             # Explore this assignment
             if is_consistent(csp, var, value):
+                # GGWP
                 if backtrack(csp):
                     return True
+        # Nope
         csp.variables.rollback()
         return False
