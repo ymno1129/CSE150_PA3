@@ -52,16 +52,19 @@ def backtrack(csp):
     # Base case
     if (is_complete(csp)):
         return True
-    else:
-       # Set rollback point
+
+    # Get first unassigned variable
+    var = select_unassigned_variable(csp)
+
+    # Iterate through domain
+    for value in order_domain_values(csp, var):
+
+        # Set rollback point
         csp.variables.begin_transaction()
+        var.assign(value)
 
-        # Get first unassigned variable
-        var = select_unassigned_variable(csp)
-
-        # Iterate through domain
-        for value in order_domain_values(csp, var):
-            var.assign(value)
+        # Inference
+        if (inference(csp, var)):
             # Explore this assignment
             if is_consistent(csp, var, value):
                 # GGWP
@@ -69,4 +72,4 @@ def backtrack(csp):
                     return True
         # Nope
         csp.variables.rollback()
-        return False
+    return False

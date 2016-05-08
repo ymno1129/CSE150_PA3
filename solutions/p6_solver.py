@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from collections import deque
+from p1_is_complete import *
+from p2_is_consistent import *
+from p3_basic_backtracking import *
 
 
 def inference(csp, variable):
@@ -31,7 +34,29 @@ def backtrack(csp):
     If there is a solution, this method returns True; otherwise, it returns False.
     """
 
-    # TODO copy from p3
+    # Base case
+    if (is_complete(csp)):
+        return True
+
+    # Get first unassigned variable
+    var = select_unassigned_variable(csp)
+
+    # Iterate through domain
+    for value in order_domain_values(csp, var):
+
+        # Set rollback point
+        csp.variables.begin_transaction()
+        var.assign(value)
+
+        # Inference
+        if (inference(csp, var)):
+            # Explore this assignment
+            if is_consistent(csp, var, value):
+                # GGWP
+                if backtrack(csp):
+                    return True
+        # Nope
+        csp.variables.rollback()
     return False
 
 
@@ -44,10 +69,35 @@ def ac3(csp, arcs=None):
 
     Note that the current domain of each variable can be retrieved by 'variable.domains'.
 
-    This method returns True if the arc consistency check succeeds, and False otherwise.  Note that this method does not
-    return any additional variable assignments (for simplicity)."""
+    This method returns True if the arc consistency check succeeds, and False otherwise."""
 
     queue_arcs = deque(arcs if arcs is not None else csp.constraints.arcs())
+    while queue_arcs:
+        var1, var2 = queue_arcs.popleft()
 
-    # TODO copy from p4
-    pass
+        # Propagate changes in var1.domain to neighbors
+        if revise(csp, var1, var2):
+            if len(var1.domain) == 0:
+                return False
+            for (v, neighbor) in csp.constraints[var1].arcs():
+                if (neighbor != var2):
+                    queue_arcs.append((v, neighbor))
+    return True
+
+def revise(csp, xi, xj):
+
+    revised = False
+
+    # Check for consistency
+    for constraint in csp.constraints[xi, xj]:
+
+        # Check if value has non-conflicting assignments
+        non_conflicts = []
+        for di in xi.domain:
+            non_conflicts = [dj for dj in xj.domain if constraint.is_satisfied(di, dj)]
+
+            # This value conflicts w/ everything
+            if len(non_conflicts) == 0 and di in xi.domain:
+                xi.domain.remove(di)
+                revised = True
+    return revised
