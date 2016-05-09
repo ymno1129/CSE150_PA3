@@ -3,7 +3,7 @@
 from collections import deque
 from p1_is_complete import *
 from p2_is_consistent import *
-from p3_basic_backtracking import *
+from p5_ordering import *
 
 
 def inference(csp, variable):
@@ -44,19 +44,20 @@ def backtrack(csp):
     # Iterate through domain
     for value in order_domain_values(csp, var):
 
-        # Set rollback point
-        csp.variables.begin_transaction()
-        var.assign(value)
-
         # Inference
-        if (inference(csp, var)):
+        if is_consistent(csp, var, value):
+
+            # Set rollback point
+            csp.variables.begin_transaction()
+            var.assign(value)
+
             # Explore this assignment
-            if is_consistent(csp, var, value):
+            if (inference(csp, var)):
                 # GGWP
                 if backtrack(csp):
                     return True
-        # Nope
-        csp.variables.rollback()
+            # Nope
+            csp.variables.rollback()
     return False
 
 

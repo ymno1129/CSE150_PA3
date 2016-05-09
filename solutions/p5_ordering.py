@@ -9,6 +9,7 @@ def select_unassigned_variable(csp):
     then it picks the variable that is involved in the largest number of constraints on other
     unassigned variables.
     """
+
     min_left = 100
     selected_var = None #temporary MRV variable
 
